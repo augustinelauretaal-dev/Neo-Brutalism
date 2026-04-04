@@ -2,7 +2,7 @@
 
 :root {
   /* Dark Theme - Default */
-  --bg-base: #111111;
+  --bg-base: #141414;
   --bg-panel: #1a1a1a;
   --bg-elevated: #262626;
   
@@ -28,7 +28,7 @@
 }
 
 [data-theme="light"] {
-  --bg-base: #f3f4f6;
+  --bg-base: #f1e5ee;
   --bg-panel: #ffffff;
   --bg-elevated: #ffffff;
   

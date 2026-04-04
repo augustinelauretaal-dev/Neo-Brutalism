@@ -97,7 +97,7 @@ export default function Navbar() {
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className={`p-2 border-2 border-foreground shadow-[3px_3px_0_0_var(--shadow-color)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all ${
-              theme === "dark" ? "bg-accent-purple" : "bg-accent-yellow"
+              theme === "dark" ? "bg-accent-cyan" : "bg-accent-yellow"
             }`}
           >
             <AnimatePresence mode="wait">
