@@ -87,7 +87,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-20">
           
           {/* Brand & Status Block */}
-          <div className="lg:col-span-5 space-y-8">
+          <div className="lg:col-span-7 space-y-8">
             <div className="space-y-6">
               <motion.button
                 onClick={scrollToTop}
@@ -97,7 +97,7 @@ export default function Footer() {
                 <span className="inline-block w-4 h-4 bg-accent-purple ml-2 shadow-[2px_2px_0_0_var(--shadow-color)] group-hover:bg-accent-cyan transition-colors border-2 border-foreground" />
               </motion.button>
 
-              <p className="text-foreground font-bold text-xl uppercase leading-none max-w-md">
+              <p className="text-foreground font-bold text-xl uppercase leading-none max-w-xl">
                 Designing and developing modern digital experiences focused on performance,
                 scalability, and user-centered design.
               </p>
@@ -115,29 +115,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Sitemap: Industrial List */}
-          <div className="lg:col-span-3 space-y-8">
-            <h4 className="text-xl font-black uppercase italic tracking-tighter border-l-8 border-foreground pl-4 inline-block">
-              Sitemap
-            </h4>
-
-            <ul className="grid grid-cols-1 gap-2">
-              {footerLinks.map((link) => (
-                <li key={link.name}>
-                  <button
-                    onClick={() => handleNavClick(link.id)}
-                    className="w-full text-left px-4 py-2 border-2 border-foreground bg-panel font-black uppercase text-xs tracking-widest shadow-[4px_4px_0_0_var(--shadow-color)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 hover:bg-accent-cyan hover:text-black transition-all group flex items-center justify-between"
-                  >
-                    {link.name}
-                    <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={3} />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Social: Action Grid */}
-          <div className="lg:col-span-4 space-y-8 flex flex-col items-start lg:items-end">
+          <div className="lg:col-span-5 space-y-8 flex flex-col items-start lg:items-end">
             <h4 className="text-sm font-black uppercase tracking-widest border-b-4 border-foreground inline-block">
               Connect
             </h4>
