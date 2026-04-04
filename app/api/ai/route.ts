@@ -16,10 +16,9 @@ const KNOWLEDGE = {
 };
 
 function generateResponse(message: string, context: any): ChatResponse {
-  const msg = message.toLowerCase();
-  let nextContext = { ...context };
-
-  // LEAD CAPTURE REDIRECT
+  const msg = message.toLowerCase().trim();
+  
+  // 1. HIGH PRIORITY: LEAD CAPTURE REDIRECT (Anytime)
   if (msg.includes("price") || msg.includes("cost") || msg.includes("budget") || msg.includes("hire")) {
     return {
       content: "Let's talk business. What are we building?",
@@ -29,18 +28,9 @@ function generateResponse(message: string, context: any): ChatResponse {
     };
   }
 
-  // START / GREETING
-  if (msg.includes("hi") || msg.includes("hello") || msg.includes("hey") || !context.step) {
-    return {
-      content: "Hi. I'm your guide here. What's the goal?",
-      mode: "buttons",
-      options: ["Projects", "Services", "Start Project"],
-      context: { step: "initial" }
-    };
-  }
-
-  // FLOW: PROJECTS
-  if (msg === "projects" || (context.step === "initial" && msg === "projects")) {
+  // 2. INTENT DETECTION (Projects, Services, Start Project, About)
+  // Check these before the greeting fallback
+  if (msg === "projects") {
     return {
       content: `Key work: ${KNOWLEDGE.projects.join(", ")}.`,
       mode: "buttons",
@@ -49,10 +39,36 @@ function generateResponse(message: string, context: any): ChatResponse {
     };
   }
 
+  if (msg === "services") {
+    return {
+      content: "I deliver specialized digital solutions:",
+      mode: "buttons",
+      options: ["Web Dev", "UI/UX", "POS", "Full-stack"],
+      context: { step: "services_list" }
+    };
+  }
+
+  if (msg === "start project") {
+    return {
+      content: "Nice. What type of project?",
+      mode: "buttons",
+      options: ["Website", "POS System", "Dashboard", "Mobile App"],
+      context: { step: "project_type" }
+    };
+  }
+
+  if (msg === "about") {
+    return {
+      content: "I'm Augustine's AI assistant. I help navigate his work and technical expertise.",
+      mode: "buttons",
+      options: ["Projects", "Services", "Start Project"],
+      context: { step: "initial" }
+    };
+  }
+
+  // 3. STEP-BASED FLOW LOGIC
   if (context.step === "projects_list") {
-    if (msg === "back") {
-      return generateResponse("hi", {});
-    }
+    if (msg === "back") return generateResponse("hi", {});
     if (msg === "tech stack") {
       return {
         content: "Next.js, Tailwind, TS, MySQL. High performance only.",
@@ -71,32 +87,12 @@ function generateResponse(message: string, context: any): ChatResponse {
     }
   }
 
-  // FLOW: SERVICES
-  if (msg === "services" || (context.step === "initial" && msg === "services")) {
-    return {
-      content: "I deliver specialized digital solutions:",
-      mode: "buttons",
-      options: ["Web Dev", "UI/UX", "POS", "Full-stack"],
-      context: { step: "services_list" }
-    };
-  }
-
   if (context.step === "services_list") {
     return {
       content: "Ready to build one of these?",
       mode: "buttons",
       options: ["Start Project", "Back"],
       context: { step: "initial" }
-    };
-  }
-
-  // FLOW: START PROJECT
-  if (msg === "start project" || (context.step === "initial" && msg === "start project")) {
-    return {
-      content: "Nice. What type of project?",
-      mode: "buttons",
-      options: ["Website", "POS System", "Dashboard", "Mobile App"],
-      context: { step: "project_type" }
     };
   }
 
@@ -117,7 +113,6 @@ function generateResponse(message: string, context: any): ChatResponse {
         context: { step: "project_details_prompt", type: "POS" }
       };
     }
-    // Generic fallback for other types
     return {
       content: "Describe your project briefly.",
       mode: "input",
@@ -153,7 +148,17 @@ function generateResponse(message: string, context: any): ChatResponse {
     };
   }
 
-  // UNKNOWN / FALLBACK
+  // 4. FALLBACK / GREETING (If no specific intent detected)
+  if (msg.includes("hi") || msg.includes("hello") || msg.includes("hey") || !context.step) {
+    return {
+      content: "Hi. I'm your guide here. What's the goal?",
+      mode: "buttons",
+      options: ["Projects", "Services", "Start Project"],
+      context: { step: "initial" }
+    };
+  }
+
+  // 5. FINAL FALLBACK
   return {
     content: "I can guide you better. Choose one:",
     mode: "buttons",
