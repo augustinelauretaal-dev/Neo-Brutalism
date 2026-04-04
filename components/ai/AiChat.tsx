@@ -80,7 +80,7 @@ export default function AiChat() {
         ))}
         {isLoading && (
           <div className="flex justify-start mb-4">
-            <div className="px-4 py-2 bg-accent-blue/10 border-2 border-foreground shadow-[4px_4px_0_0_var(--shadow-color)]">
+            <div className="px-4 py-2 bg-panel border-2 border-foreground shadow-[4px_4px_0_0_var(--shadow-color)]">
               <div className="flex gap-1">
                 <motion.span
                   animate={{ opacity: [0, 1, 0] }}

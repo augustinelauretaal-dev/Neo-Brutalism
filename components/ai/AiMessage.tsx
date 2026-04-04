@@ -23,7 +23,7 @@ export default function AiMessage({ message }: AiMessageProps) {
       <div
         className={`max-w-[85%] px-4 py-3 border-2 border-foreground font-bold text-sm shadow-[4px_4px_0_0_var(--shadow-color)] ${
           isAssistant
-            ? "bg-accent-blue/10 text-foreground"
+            ? "bg-panel text-foreground"
             : "bg-accent-yellow text-black"
         }`}
       >
