@@ -11,7 +11,7 @@ interface AiButtonProps {
 export default function AiButton({ isOpen, onClick }: AiButtonProps) {
   return (
     <motion.button
-      whileHover={{ scale: 1.05, translatex: -2, translateY: -2 }}
+      whileHover={{ scale: 1.05, translateX: -2, translateY: -2 }}
       whileTap={{ scale: 0.95, translateX: 2, translateY: 2 }}
       onClick={onClick}
       className={`fixed bottom-8 right-8 z-[100] w-16 h-16 flex items-center justify-center border-4 border-foreground shadow-neo transition-colors ${
