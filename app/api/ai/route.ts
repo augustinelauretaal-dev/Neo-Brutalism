@@ -1,115 +1,165 @@
 import { NextResponse } from "next/server";
 
-type Intent =
-  | "greeting"
-  | "projects"
-  | "services"
-  | "tech"
-  | "contact"
-  | "about"
-  | "start_project"
-  | "pricing"
-  | "unknown";
+type ChatMode = "buttons" | "input";
 
-type ChatContext = {
-  lastIntent?: Intent;
-  projectType?: string;
-  interested?: boolean;
-};
+interface ChatResponse {
+  content: string;
+  mode: ChatMode;
+  options?: string[];
+  inputPlaceholder?: string;
+  context: any;
+}
 
 const KNOWLEDGE = {
-  projects: [
-    "Neo-Brutalism Portfolio",
-    "Modern Portfolio (Ago27)",
-    "BookIt Booking Site",
-    "Government Portal (Next.js + MySQL)"
-  ],
-  services: [
-    "Web Development",
-    "UI/UX Design",
-    "Mobile Development",
-    "POS System Architecture",
-    "Full-stack Solutions"
-  ],
-  techStack: ["Next.js", "Tailwind CSS", "TypeScript", "Modern UI Design", "POS Systems", "Full-stack Applications"]
+  projects: ["Neo-Brutalism Portfolio", "Modern Portfolio", "BookIt", "Gov Portal"],
+  services: ["Web Dev", "UI/UX Design", "POS Systems", "Full-stack"]
 };
 
-function detectIntent(message: string): Intent {
+function generateResponse(message: string, context: any): ChatResponse {
   const msg = message.toLowerCase();
-  if (msg.includes("hi") || msg.includes("hello") || msg.includes("hey")) return "greeting";
-  if (msg.includes("project") || msg.includes("work")) return "projects";
-  if (msg.includes("service") || msg.includes("can you do")) return "services";
-  if (msg.includes("stack") || msg.includes("tech") || msg.includes("use")) return "tech";
-  if (msg.includes("contact") || msg.includes("hire") || msg.includes("start")) return "start_project";
-  if (msg.includes("price") || msg.includes("cost") || msg.includes("budget")) return "pricing";
-  if (msg.includes("who are you") || msg.includes("about")) return "about";
-  return "unknown";
-}
+  let nextContext = { ...context };
 
-function updateContext(context: ChatContext, intent: Intent, message: string): ChatContext {
-  const newContext = { ...context, lastIntent: intent };
-  if (intent === "start_project") newContext.interested = true;
-  return newContext;
-}
-
-function generateResponse(intent: Intent, context: ChatContext) {
-  switch (intent) {
-    case "greeting":
-      return {
-        content: "Hi! I can help you explore projects, services, or start a new build.",
-        mode: "buttons",
-        options: ["Projects", "Services", "Start a Project", "About"]
-      };
-    case "projects":
-      return {
-        content: `Augustine has built: ${KNOWLEDGE.projects.join(", ")}.`,
-        mode: "buttons",
-        options: ["See Services", "Start a Project", "Contact"]
-      };
-    case "services":
-      return {
-        content: `Specialized in: ${KNOWLEDGE.services.join(", ")}.`,
-        mode: "buttons",
-        options: ["See Projects", "Start a Project", "Contact"]
-      };
-    case "tech":
-      return {
-        content: `Stack: ${KNOWLEDGE.techStack.join(", ")}. Focus is performance & UI.`,
-        mode: "buttons",
-        options: ["Projects", "Start a Project"]
-      };
-    case "start_project":
-      return {
-        content: "Nice 🔥 What are you building?",
-        mode: "buttons",
-        options: ["Landing Page", "E-commerce", "Full System", "Custom App"]
-      };
-    case "pricing":
-      return {
-        content: "Pricing depends on complexity. What's your estimated budget?",
-        mode: "input",
-        inputPlaceholder: "e.g. $1,000 - $5,000"
-      };
-    case "about":
-      return {
-        content: "I'm Augustine's AI assistant. I help navigate his work and technical expertise.",
-        mode: "buttons",
-        options: ["Projects", "Services", "Contact"]
-      };
-    default:
-      if (context.interested) {
-        return {
-          content: "Got it. Tell me more about the features or timeline you have in mind.",
-          mode: "input",
-          inputPlaceholder: "Features, timeline, etc."
-        };
-      }
-      return {
-        content: "How can I help you today?",
-        mode: "buttons",
-        options: ["Projects", "Services", "Start a Project"]
-      };
+  // LEAD CAPTURE REDIRECT
+  if (msg.includes("price") || msg.includes("cost") || msg.includes("budget") || msg.includes("hire")) {
+    return {
+      content: "Let's talk business. What are we building?",
+      mode: "buttons",
+      options: ["Website", "POS System", "Dashboard", "Mobile App"],
+      context: { step: "project_type" }
+    };
   }
+
+  // START / GREETING
+  if (msg.includes("hi") || msg.includes("hello") || msg.includes("hey") || !context.step) {
+    return {
+      content: "Hi. I'm your guide here. What's the goal?",
+      mode: "buttons",
+      options: ["Projects", "Services", "Start Project"],
+      context: { step: "initial" }
+    };
+  }
+
+  // FLOW: PROJECTS
+  if (msg === "projects" || (context.step === "initial" && msg === "projects")) {
+    return {
+      content: `Key work: ${KNOWLEDGE.projects.join(", ")}.`,
+      mode: "buttons",
+      options: ["View Demo", "Tech Stack", "Back"],
+      context: { step: "projects_list" }
+    };
+  }
+
+  if (context.step === "projects_list") {
+    if (msg === "back") {
+      return generateResponse("hi", {});
+    }
+    if (msg === "tech stack") {
+      return {
+        content: "Next.js, Tailwind, TS, MySQL. High performance only.",
+        mode: "buttons",
+        options: ["Start Project", "Back"],
+        context: { step: "projects_list" }
+      };
+    }
+    if (msg === "view demo") {
+      return {
+        content: "Check the 'Projects' section on the main page for live links.",
+        mode: "buttons",
+        options: ["Start Project", "Back"],
+        context: { step: "projects_list" }
+      };
+    }
+  }
+
+  // FLOW: SERVICES
+  if (msg === "services" || (context.step === "initial" && msg === "services")) {
+    return {
+      content: "I deliver specialized digital solutions:",
+      mode: "buttons",
+      options: ["Web Dev", "UI/UX", "POS", "Full-stack"],
+      context: { step: "services_list" }
+    };
+  }
+
+  if (context.step === "services_list") {
+    return {
+      content: "Ready to build one of these?",
+      mode: "buttons",
+      options: ["Start Project", "Back"],
+      context: { step: "initial" }
+    };
+  }
+
+  // FLOW: START PROJECT
+  if (msg === "start project" || (context.step === "initial" && msg === "start project")) {
+    return {
+      content: "Nice. What type of project?",
+      mode: "buttons",
+      options: ["Website", "POS System", "Dashboard", "Mobile App"],
+      context: { step: "project_type" }
+    };
+  }
+
+  if (context.step === "project_type") {
+    if (msg === "website") {
+      return {
+        content: "What kind of website?",
+        mode: "buttons",
+        options: ["Landing Page", "E-commerce", "Full System"],
+        context: { step: "project_details_prompt", type: "Website" }
+      };
+    }
+    if (msg === "pos system") {
+      return {
+        content: "Focus area?",
+        mode: "buttons",
+        options: ["Inventory", "Sales", "Multi-branch"],
+        context: { step: "project_details_prompt", type: "POS" }
+      };
+    }
+    // Generic fallback for other types
+    return {
+      content: "Describe your project briefly.",
+      mode: "input",
+      inputPlaceholder: "Features, goals, etc.",
+      context: { step: "awaiting_details" }
+    };
+  }
+
+  if (context.step === "project_details_prompt") {
+    return {
+      content: "Got it. Describe your project briefly.",
+      mode: "input",
+      inputPlaceholder: "Features, goals, etc.",
+      context: { step: "awaiting_details" }
+    };
+  }
+
+  if (context.step === "awaiting_details") {
+    return {
+      content: "Got it. This can be built. Enter your email to proceed.",
+      mode: "input",
+      inputPlaceholder: "Email address",
+      context: { step: "awaiting_email" }
+    };
+  }
+
+  if (context.step === "awaiting_email") {
+    return {
+      content: "Received. Augustine will reach out soon. Anything else?",
+      mode: "buttons",
+      options: ["Projects", "Services", "Restart"],
+      context: { step: "initial" }
+    };
+  }
+
+  // UNKNOWN / FALLBACK
+  return {
+    content: "I can guide you better. Choose one:",
+    mode: "buttons",
+    options: ["Projects", "Services", "Start Project"],
+    context: { step: "initial" }
+  };
 }
 
 export async function POST(req: Request) {
@@ -117,17 +167,11 @@ export async function POST(req: Request) {
     const { messages, context = {} } = await req.json();
     const lastMessage = messages[messages.length - 1].content;
 
-    const intent = detectIntent(lastMessage);
-    const updatedContext = updateContext(context, intent, lastMessage);
-    const response = generateResponse(intent, updatedContext);
+    const response = generateResponse(lastMessage, context);
 
-    // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 600));
 
-    return NextResponse.json({
-      ...response,
-      context: updatedContext
-    });
+    return NextResponse.json(response);
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
