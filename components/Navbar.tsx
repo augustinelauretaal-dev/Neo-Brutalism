@@ -124,11 +124,32 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Mobile Toggle */}
+        {/* Mobile Actions */}
         <div className="md:hidden flex items-center gap-4">
+          {/* Theme Toggle - Mobile */}
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className={`p-2 border-2 border-foreground shadow-[2px_2px_0_0_var(--shadow-color)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all ${
+              theme === "dark" ? "bg-accent-purple" : "bg-accent-yellow"
+            }`}
+          >
+            <AnimatePresence mode="wait">
+              {theme === "dark" ? (
+                <motion.div key="sun-mob" initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }}>
+                  <Sun size={20} className="text-white" />
+                </motion.div>
+              ) : (
+                <motion.div key="moon-mob" initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }}>
+                  <Moon size={20} className="text-black" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </button>
+
+          {/* Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 border-2 border-foreground bg-accent-blue shadow-[3px_3px_0_0_var(--shadow-color)]"
+            className="p-2 border-2 border-foreground bg-accent-blue shadow-[2px_2px_0_0_var(--shadow-color)]"
           >
             {isMobileMenuOpen ? <X size={24} className="text-white" /> : <Menu size={24} className="text-white" />}
           </button>
