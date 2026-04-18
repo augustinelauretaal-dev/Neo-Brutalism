@@ -131,7 +131,7 @@ export const projects: Project[] = [
 
 
   {
-    "id": 7,
+    "id": 6,
     "title": "TERMINAL // Typing_Master_OS",
     "description": "A terminal-themed typing speed test application featuring real-time WPM tracking, accuracy metrics, and a dedicated code mode for developers.",
     "image": "/Image/project-placeholder-7.png",
@@ -152,12 +152,33 @@ export const projects: Project[] = [
     ]
   },
 
-
   {
       "id": 7,
       "title": "King James Portfolio",
       "description": "A dynamic tribute website celebrating the career, statistics, and legacy of LeBron James with a modern, responsive design.",
       "image": "/Image/project-placeholder-8.png",
+      "link": "https://lebron-james-bdbm.vercel.app/",
+      "technologies": ["Next.js", "Tailwind CSS"],
+      "category": "Frontend",
+
+      "problem": "Fans and sports enthusiasts needed a centralized, interactive visual hub to explore the extensive career milestones and highlights of LeBron James.",
+
+      "solution": "Created an immersive tribute portal featuring a career timeline, interactive statistics, highlight reels, and a photo gallery to document his professional journey.",
+
+      "features": [
+        "Interactive Career Timeline",
+        "Achievement & Honors Showcase",
+        "Video Highlight Integration",
+        "Photo Gallery",
+        "Responsive Performance-Optimized UI"
+      ]
+  },
+
+  {
+      "id": 8,
+      "title": "King James Portfolio",
+      "description": "A dynamic tribute website celebrating the career, statistics, and legacy of LeBron James with a modern, responsive design.",
+      "image": "/Image/project-placeholder-9.png",
       "link": "https://lebron-james-bdbm.vercel.app/",
       "technologies": ["Next.js", "Tailwind CSS"],
       "category": "Frontend",
