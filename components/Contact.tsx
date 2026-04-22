@@ -58,9 +58,9 @@ export default function Contact() {
       const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
       const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-      if (!serviceId || !templateId || !publicKey) {
-        throw new Error("EmailJS configuration missing");
-      }
+      if (!serviceId) throw new Error("EmailJS Service ID missing");
+      if (!templateId) throw new Error("EmailJS Template ID missing");
+      if (!publicKey) throw new Error("EmailJS Public Key missing");
 
       await emailjs.send(
         serviceId,
@@ -244,14 +244,14 @@ export default function Contact() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="flex items-center gap-4 p-4 border-4 border-foreground bg-accent-red text-white shadow-neo"
+                          className="flex items-center gap-4 p-4 border-4 border-foreground bg-accent-red text-gray shadow-neo"
                         >
                           <AlertCircle className="shrink-0 w-6 h-6" />
                           <p className="font-black uppercase text-sm flex-grow">{errorMessage}</p>
                           <button 
                             type="button" 
                             onClick={() => setStatus("idle")}
-                            className="p-1 hover:bg-white/20 transition-colors"
+                            className="p-3 border-2 border-foreground shadow-neo bg-accent-yellow text-black transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
                           >
                             <X className="w-5 h-5" />
                           </button>
